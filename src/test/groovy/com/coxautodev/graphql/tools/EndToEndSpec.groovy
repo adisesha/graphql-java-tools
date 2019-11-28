@@ -197,6 +197,19 @@ class EndToEndSpec extends Specification {
             data.itemByUUID
     }
 
+    def "generated schema should handle scalar types with non json serializable nested types"() {
+        when:
+        def filePart = new MockPart("test.doc", "Hello")
+        def args = ["filePart": filePart]
+        def data = Utils.assertNoGraphQlErrors( gql,  args) {
+            '''
+              mutation ($filePart: Upload!) { echoFile(filePart: $filePart)}
+            '''
+        }
+        then:
+        data
+    }
+
     def "generated schema should handle any java.util.Map (using HashMap) types as property maps"() {
         when:
         def data = Utils.assertNoGraphQlErrors(gql) {
